@@ -3,9 +3,12 @@ var app = express()
 var http = require('http').createServer(app)
 var io = require('socket.io')(http)
 var port = 3000
+var userOnlineCount = 0
 
 io.on('connect',(Socket)=>{
-    console.log('Se Conectou')
+    console.log('\u001b[31m'+Socket.id+':\u001b[34m Se Conectou :\u001b[35m'+ Socket.request.headers['user-agent'])
+    userOnlineCount++
+    Socket.emit('usersCount',({userOnlineCount}))
     Socket.on('welcome',()=>{
         console.log('Entrou No Chat')
 
@@ -14,6 +17,11 @@ io.on('connect',(Socket)=>{
           
         io.emit('update',({user:user.user,msg:user.msg}))
     })
+    Socket.on('disconnect',()=>{
+        userOnlineCount--
+        console.log(Socket.id+':  desconectou  '+ userOnlineCount)
+    })
+    console.log('\u001b[33mUsuarios \u001b[32monline: '+userOnlineCount+'\u001b[37m')
    
 })
 

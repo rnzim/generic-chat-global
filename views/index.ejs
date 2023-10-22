@@ -80,13 +80,16 @@
     color: #8e999f;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+#on{
+  color: rgb(49, 207, 49);
+}
 
     </style>
 </head>
 <body>
-
+    
     <div class="card">
-        <div class="chat-header">Chat Global</div>
+        <div class="chat-header">Chat Global <p id="on">Onlines:</p></div>
           <div class="chat-window" id="content">
             <ul class="message-list"></ul>
           </div>
@@ -115,11 +118,24 @@
                   cont.appendChild(p)
                 
             })
-
+        
+           socket.on('usersCount',(count)=>{
+           var onl = document.getElementById('on')
+           console.log(count.userOnlineCount)
+           onl.innerHTML = "Onlines: "+count.userOnlineCount
+        })
+      
+        
+        socket.on('disconnect',()=>{console.log('desconectado')})
         btn_send.addEventListener('click',()=>{
             var user = document.getElementById('username').value
             var msg = document.getElementById('msg').value
             socket.emit('msg',({user:user,msg:msg}))
+            socket.on('usersCount',(count)=>{
+            var onl = document.getElementById('on')
+            console.log(count.userOnlineCount)
+            onl.innerHTML = "Onlines: "+count.userOnlineCount
+        })
           
         })
         
