@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        .card {
+            width: 70%;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            margin: auto;
+}
+
+.chat-header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  font-size: 18px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.chat-window {
+  height: 220px;
+  overflow-y: scroll;
+  padding: 10px;
+ 
+}
+
+.message-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.message-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.send-button {
+  border: none;
+  outline: none;
+  background-color: #333;
+  color: #fff;
+  font-size: 14px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.send-button:hover {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+}
+.message-p {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+  padding: 5px;
+  background-color: #e1e1e1;
+  border-radius: 7px;
+  margin-bottom: 5px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+#nuser{
+    color: #8e999f;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="chat-header">Chat Global</div>
+          <div class="chat-window" id="content">
+            <ul class="message-list"></ul>
+          </div>
+          <input type="text" class="chat-input" id="username" placeholder="Seu nome" style="width: 70%;border: none;border-top:#333 2px solid;outline: none;">
+          <div class="chat-input">
+              <input type="text" class="message-input" id="msg" placeholder="Type your message here">
+              <button class="send-button" id="send">Send</button>
+          </div>
+        </div>
+      
+  
+       
+      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script>
+        var url = 'localhost:3000'
+        var socket = io(url)
+        var btn_send = document.getElementById('send')
+        var cont = document.getElementById('content')
+       
+        socket.on('update',(data)=>{
+                  var p = document.createElement('p')
+                  p.className = 'message-p'
+                  console.log(data.user+''+data.msg)
+                  p.innerHTML = `<span id="nuser">${data.user}</span> -> ${data.msg} `
+                  cont.appendChild(p)
+                
+            })
+
+        btn_send.addEventListener('click',()=>{
+            var user = document.getElementById('username').value
+            var msg = document.getElementById('msg').value
+            socket.emit('msg',({user:user,msg:msg}))
+          
+        })
+        
+    </script>
+</body>
+</html>
